@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eye Disease Detection</title>
+  </head>
+  <body>
+    <h1>Eye Disease Detection</h1>
+    <form action="/" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" accept="image/*" required />
+      <input type="submit" value="Predict" />
+    </form>
+    <div id="result"></div>
+
+    <script>
+      const form = document.querySelector("form");
+      const resultDiv = document.getElementById("result");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        const response = await fetch("/", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+        if (result.error) {
+          resultDiv.innerHTML = `<p>Error: ${result.error}</p>`;
+        } else {
+          resultDiv.innerHTML = `
+                    <h2>Prediction Results:</h2>
+                    <p>Category: ${result.category}</p>
+                    <p>Type: ${result.type}</p>
+                    <p>Grade: ${result.grade}</p>
+                `;
+        }
+      });
+    </script>
+  </body>
+</html>
